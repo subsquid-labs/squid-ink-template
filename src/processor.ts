@@ -26,9 +26,9 @@ type Ctx = BatchContext<Store, Item>
  
  
 processor.run(new TypeormDatabase(), async ctx => {
-    let txs = extractTransferRecords(ctx)
+    const txs = extractTransferRecords(ctx)
  
-    let ownerIds = new Set<string>()
+    const ownerIds = new Set<string>()
     txs.forEach(tx => {
         if (tx.from) {
             ownerIds.add(tx.from)
@@ -38,14 +38,14 @@ processor.run(new TypeormDatabase(), async ctx => {
         }
     })
  
-    let owners = await ctx.store.findBy(Owner, {
+    const owners = await ctx.store.findBy(Owner, {
         id: In([...ownerIds])
     }).then(owners => {
-        return new Map(owners.map(o => [o.id, o]))
+        return new Map(owners.map(owner => [owner.id, owner]))
     })
  
-    let transfers = txs.map(tx => {
-        let transfer = new Transfer({
+    const transfers = txs.map(tx => {
+        const transfer = new Transfer({
             id: tx.id,
             amount: tx.amount,
             block: tx.block,
@@ -89,12 +89,12 @@ interface TransferRecord {
  
  
 function extractTransferRecords(ctx: Ctx): TransferRecord[] {
-    let records: TransferRecord[] = []
-    for (let block of ctx.blocks) {
-        for (let item of block.items) {
-            if (item.name == 'Contracts.ContractEmitted' && item.event.args.contract == CONTRACT_ADDRESS) {
-                let event = erc20.decodeEvent(item.event.args.data)
-                if (event.__kind == 'Transfer') {
+    const records: TransferRecord[] = []
+    for (const block of ctx.blocks) {
+        for (const item of block.items) {
+            if (item.name === 'Contracts.ContractEmitted' && item.event.args.contract === CONTRACT_ADDRESS) {
+                const event = erc20.decodeEvent(item.event.args.data)
+                if (event.__kind === 'Transfer') {
                     records.push({
                         id: item.event.id,
                         from: event.from && ss58.codec(5).encode(event.from),
