@@ -38,7 +38,7 @@ processor.run(new TypeormDatabase(), async ctx => {
         }
     })
  
-    const owners = await ctx.store.findBy(Owner, {
+    const ownersMap = await ctx.store.findBy(Owner, {
         id: In([...ownerIds])
     }).then(owners => {
         return new Map(owners.map(owner => [owner.id, owner]))
@@ -53,19 +53,19 @@ processor.run(new TypeormDatabase(), async ctx => {
         })
  
         if (tx.from) {
-            transfer.from = owners.get(tx.from)
+            transfer.from = ownersMap.get(tx.from)
             if (transfer.from == null) {
                 transfer.from = new Owner({id: tx.from, balance: 0n})
-                owners.set(tx.from, transfer.from)
+                ownersMap.set(tx.from, transfer.from)
             }
             transfer.from.balance -= tx.amount
         }
  
         if (tx.to) {
-            transfer.to = owners.get(tx.to)
+            transfer.to = ownersMap.get(tx.to)
             if (transfer.to == null) {
                 transfer.to = new Owner({id: tx.to, balance: 0n})
-                owners.set(tx.to, transfer.to)
+                ownersMap.set(tx.to, transfer.to)
             }
             transfer.to.balance += tx.amount
         }
@@ -73,7 +73,7 @@ processor.run(new TypeormDatabase(), async ctx => {
         return transfer
     })
  
-    await ctx.store.save([...owners.values()])
+    await ctx.store.save([...ownersMap.values()])
     await ctx.store.insert(transfers)
 })
  
