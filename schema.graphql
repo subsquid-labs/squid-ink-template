@@ -1,12 +1,15 @@
-	type Owner @entity {
+type Account @entity {
+  id: ID!
+}
+
+type Contract @entity {
   id: ID!
   balance: BigInt!
 }
- 
-type Transfer @entity {
+
+type ContractHistoricalBalance @entity {
   id: ID!
-  from: Owner
-  to: Owner
+  from: Account
   amount: BigInt!
   timestamp: DateTime!
   block: Int!

@@ -2,8 +2,8 @@ import {Entity as Entity_, Column as Column_, PrimaryColumn as PrimaryColumn_} f
 import * as marshal from "./marshal"
 
 @Entity_()
-export class Owner {
-  constructor(props?: Partial<Owner>) {
+export class Contract {
+  constructor(props?: Partial<Contract>) {
     Object.assign(this, props)
   }
 
