@@ -1,35 +1,14 @@
 manifestVersion: subsquid.io/v0.1
-namespace: squid
-
-name: wasm-batch-template
+name: ink-template
+version: 1
 description: |-
-  The very first squid from manifest
-tags:
-  - wasm
+  Ink! contract indexing squid  
+build:
 
-database:
-  type: pg-14
-
-api:
-  cmd: [ "npx", "squid-graphql-server" ]
-  graphql-examples:
-    - query: |-
-        query MyQuery {
-          ownersConnection(orderBy: id_ASC) {
-            edges {
-              node {
-                  id
-              }
-            }
-          }
-        }
-      variables: {} # optional
-processor:
-  init:
-    - name: db-migrate
-      cmd: [ "npx" ,"sqd", "db", "migrate" ]
-
-#  secrets:
-#    - name: SECRET_ENV_NAME
-
-  cmd: [ "node", "lib/processor" ]
+deploy:
+  addons:
+    postgres:
+  processor:
+    cmd: [ "node", "lib/processor" ]
+  api:
+    cmd: [ "npx", "squid-graphql-server", "--dumb-cache", "in-memory", "--dumb-cache-ttl", "1000", "--dumb-cache-size", "100", "--dumb-cache-max-age", "1000" ]

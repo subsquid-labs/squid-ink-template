@@ -634,31 +634,31 @@ export const metadata = {
 const _abi = new Abi(metadata)
 
 export function decodeEvent(hex: string): Event {
-  return _abi.decodeEvent(hex)
+    return _abi.decodeEvent(hex)
 }
 
 export function decodeMessage(hex: string): Message {
-  return _abi.decodeMessage(hex)
+    return _abi.decodeMessage(hex)
 }
 
 export function decodeConstructor(hex: string): Constructor {
-  return _abi.decodeConstructor(hex)
+    return _abi.decodeConstructor(hex)
 }
 
 export type Event = Event_Transfer | Event_Approval
 
 export interface Event_Transfer {
-  __kind: 'Transfer'
-  from: (AccountId | undefined)
-  to: (AccountId | undefined)
-  value: Balance
+    __kind: 'Transfer'
+    from: (AccountId | undefined)
+    to: (AccountId | undefined)
+    value: Balance
 }
 
 export interface Event_Approval {
-  __kind: 'Approval'
-  owner: AccountId
-  spender: AccountId
-  value: Balance
+    __kind: 'Approval'
+    owner: AccountId
+    spender: AccountId
+    value: Balance
 }
 
 export type Message = Message_total_supply | Message_balance_of | Message_allowance | Message_transfer | Message_approve | Message_transfer_from
@@ -667,7 +667,7 @@ export type Message = Message_total_supply | Message_balance_of | Message_allowa
  *  Returns the total token supply.
  */
 export interface Message_total_supply {
-  __kind: 'total_supply'
+    __kind: 'total_supply'
 }
 
 /**
@@ -676,8 +676,8 @@ export interface Message_total_supply {
  *  Returns `0` if the account is non-existent.
  */
 export interface Message_balance_of {
-  __kind: 'balance_of'
-  owner: AccountId
+    __kind: 'balance_of'
+    owner: AccountId
 }
 
 /**
@@ -686,9 +686,9 @@ export interface Message_balance_of {
  *  Returns `0` if no allowance has been set.
  */
 export interface Message_allowance {
-  __kind: 'allowance'
-  owner: AccountId
-  spender: AccountId
+    __kind: 'allowance'
+    owner: AccountId
+    spender: AccountId
 }
 
 /**
@@ -702,9 +702,9 @@ export interface Message_allowance {
  *  the caller's account balance.
  */
 export interface Message_transfer {
-  __kind: 'transfer'
-  to: AccountId
-  value: Balance
+    __kind: 'transfer'
+    to: AccountId
+    value: Balance
 }
 
 /**
@@ -716,9 +716,9 @@ export interface Message_transfer {
  *  An `Approval` event is emitted.
  */
 export interface Message_approve {
-  __kind: 'approve'
-  spender: AccountId
-  value: Balance
+    __kind: 'approve'
+    spender: AccountId
+    value: Balance
 }
 
 /**
@@ -738,10 +738,10 @@ export interface Message_approve {
  *  the account balance of `from`.
  */
 export interface Message_transfer_from {
-  __kind: 'transfer_from'
-  from: AccountId
-  to: AccountId
-  value: Balance
+    __kind: 'transfer_from'
+    from: AccountId
+    to: AccountId
+    value: Balance
 }
 
 export type Constructor = Constructor_new
@@ -750,8 +750,8 @@ export type Constructor = Constructor_new
  * Creates a new ERC-20 contract with the specified initial supply.
  */
 export interface Constructor_new {
-  __kind: 'new'
-  initialSupply: Balance
+    __kind: 'new'
+    initialSupply: Balance
 }
 
 export type AccountId = Uint8Array
