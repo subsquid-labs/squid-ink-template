@@ -5,15 +5,6 @@
         "description": "delete all build artifacts",
         "cmd": ["npx", "--yes", "rimraf", "lib"]
       },
-      "generate": {
-        "description": "Generate a squid from an ABI file",
-        "cmd": ["squid-gen-abi"]
-      },
-      "squid-gen-abi": {
-        "description": "Generate a squid from an ABI file",
-        "cmd": ["squid-gen-abi"],
-        "hidden": true
-      },
       "build": {
         "description": "Build the squid project",
         "deps": ["clean"],
