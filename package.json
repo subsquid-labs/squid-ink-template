@@ -21,7 +21,7 @@
     "dotenv": "^16.0.3",
     "ethers": "^5.7.0",
     "pg": "8.8.0",
-    "typeorm": "0.3.12"
+    "typeorm": "^0.3.11"
   },
   "devDependencies": {
     "@subsquid/ink-typegen": "^0.1.1",
