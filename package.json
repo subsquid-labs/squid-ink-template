@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@ethersproject/abi": "^5.7.0",
-    "@subsquid/archive-registry": "2.1.8",
+    "@subsquid/archive-registry": "2.1.9",
     "@subsquid/graphql-server": "3.3.2",
     "@subsquid/ink-abi": "^1.0.1",
     "@subsquid/ss58": "^0.1.4",
