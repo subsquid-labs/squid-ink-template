@@ -10,6 +10,7 @@ import {Owner, Transfer} from "./model"
 
 const CONTRACT_ADDRESS_SS58 = 'XnrLUQucQvzp5kaaWLG9Q3LbZw5DPwpGn69B5YcywSWVr5w'
 const CONTRACT_ADDRESS = toHex(ss58.decode(CONTRACT_ADDRESS_SS58).bytes)
+const SS58_PREFIX = ss58.decode(CONTRACT_ADDRESS_SS58).prefix
  
  
 const processor = new SubstrateBatchProcessor()
@@ -99,8 +100,8 @@ function extractTransferRecords(ctx: Ctx): TransferRecord[] {
                 if (event.__kind === 'Transfer') {
                     records.push({
                         id: item.event.id,
-                        from: event.from && ss58.codec(5).encode(event.from),
-                        to: event.to && ss58.codec(5).encode(event.to),
+                        from: event.from && ss58.codec(SS58_PREFIX).encode(event.from),
+                        to: event.to && ss58.codec(SS58_PREFIX).encode(event.to),
                         amount: event.value,
                         block: block.header.height,
                         timestamp: new Date(block.header.timestamp)
