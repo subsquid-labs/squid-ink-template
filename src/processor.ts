@@ -1,13 +1,15 @@
 import { lookupArchive } from "@subsquid/archive-registry"
 import * as ss58 from "@subsquid/ss58"
+import {toHex} from "@subsquid/util-internal-hex"
 import {BatchContext, BatchProcessorItem, SubstrateBatchProcessor} from "@subsquid/substrate-processor"
 import {Store, TypeormDatabase} from "@subsquid/typeorm-store"
 import {In} from "typeorm"
 import * as erc20 from "./abi/erc20"
 import {Owner, Transfer} from "./model"
  
- 
-const CONTRACT_ADDRESS = '0x5207202c27b646ceeb294ce516d4334edafbd771f869215cb070ba51dd7e2c72'
+
+const CONTRACT_ADDRESS_SS58 = 'XnrLUQucQvzp5kaaWLG9Q3LbZw5DPwpGn69B5YcywSWVr5w'
+const CONTRACT_ADDRESS = toHex(ss58.decode(CONTRACT_ADDRESS_SS58).bytes)
  
  
 const processor = new SubstrateBatchProcessor()
