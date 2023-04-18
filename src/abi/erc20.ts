@@ -1,4 +1,4 @@
-import {Abi} from "@subsquid/ink-abi"
+import {Abi, encodeCall, decodeResult} from "@subsquid/ink-abi"
 
 export const metadata = {
   "source": {
@@ -645,6 +645,40 @@ export function decodeConstructor(hex: string): Constructor {
     return _abi.decodeConstructor(hex)
 }
 
+export interface Chain {
+    client: {
+        call: <T=any>(method: string, params?: unknown[]) => Promise<T>
+    }
+}
+
+export interface ChainContext {
+    _chain: Chain
+}
+
+export class Contract {
+    constructor(private ctx: ChainContext, private address: string, private blockHash?: string) { }
+
+    total_supply(): Promise<Balance> {
+        return this.stateCall('0xdb6375a8', [])
+    }
+
+    balance_of(owner: AccountId): Promise<Balance> {
+        return this.stateCall('0x0f755a56', [owner])
+    }
+
+    allowance(owner: AccountId, spender: AccountId): Promise<Balance> {
+        return this.stateCall('0x6a00165e', [owner, spender])
+    }
+
+    private async stateCall<T>(selector: string, args: any[]): Promise<T> {
+        let input = _abi.encodeMessageInput(selector, args)
+        let data = encodeCall(this.address, input)
+        let result = await this.ctx._chain.client.call('state_call', ['ContractsApi_call', data, this.blockHash])
+        let value = decodeResult(result)
+        return _abi.decodeMessageOutput(selector, value)
+    }
+}
+
 export type Event = Event_Transfer | Event_Approval
 
 export interface Event_Transfer {
@@ -754,8 +788,8 @@ export interface Constructor_new {
     initialSupply: Balance
 }
 
-export type AccountId = Uint8Array
-
 export type Balance = bigint
+
+export type AccountId = Uint8Array
 
 export type Result<T, E> = {__kind: 'Ok', value: T} | {__kind: 'Err', value: E}
