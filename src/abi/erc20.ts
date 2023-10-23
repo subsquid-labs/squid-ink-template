@@ -1,4 +1,4 @@
-import {Abi, encodeCall, decodeResult} from "@subsquid/ink-abi"
+import {Abi, Bytes, encodeCall, decodeResult} from "@subsquid/ink-abi"
 
 export const metadata = {
   "source": {
@@ -633,21 +633,21 @@ export const metadata = {
 
 const _abi = new Abi(metadata)
 
-export function decodeEvent(hex: string): Event {
-    return _abi.decodeEvent(hex)
+export function decodeEvent(bytes: Bytes): Event {
+    return _abi.decodeEvent(bytes)
 }
 
-export function decodeMessage(hex: string): Message {
-    return _abi.decodeMessage(hex)
+export function decodeMessage(bytes: Bytes): Message {
+    return _abi.decodeMessage(bytes)
 }
 
-export function decodeConstructor(hex: string): Constructor {
-    return _abi.decodeConstructor(hex)
+export function decodeConstructor(bytes: Bytes): Constructor {
+    return _abi.decodeConstructor(bytes)
 }
 
 export interface Chain {
-    client: {
-        call: <T=any>(method: string, params?: unknown[]) => Promise<T>
+    rpc: {
+        call<T=any>(method: string, params?: unknown[]): Promise<T>
     }
 }
 
@@ -656,7 +656,7 @@ export interface ChainContext {
 }
 
 export class Contract {
-    constructor(private ctx: ChainContext, private address: string, private blockHash?: string) { }
+    constructor(private ctx: ChainContext, private address: Bytes, private blockHash?: Bytes) { }
 
     total_supply(): Promise<Balance> {
         return this.stateCall('0xdb6375a8', [])
@@ -673,35 +673,51 @@ export class Contract {
     private async stateCall<T>(selector: string, args: any[]): Promise<T> {
         let input = _abi.encodeMessageInput(selector, args)
         let data = encodeCall(this.address, input)
-        let result = await this.ctx._chain.client.call('state_call', ['ContractsApi_call', data, this.blockHash])
+        let result = await this.ctx._chain.rpc.call('state_call', ['ContractsApi_call', data, this.blockHash])
         let value = decodeResult(result)
         return _abi.decodeMessageOutput(selector, value)
     }
 }
 
-export type Event = Event_Transfer | Event_Approval
+export type AccountId = Bytes
 
-export interface Event_Transfer {
-    __kind: 'Transfer'
-    from: (AccountId | undefined)
-    to: (AccountId | undefined)
-    value: Balance
-}
+export type Balance = bigint
 
-export interface Event_Approval {
-    __kind: 'Approval'
-    owner: AccountId
-    spender: AccountId
-    value: Balance
-}
-
-export type Message = Message_total_supply | Message_balance_of | Message_allowance | Message_transfer | Message_approve | Message_transfer_from
+export type Constructor = Constructor_new
 
 /**
- *  Returns the total token supply.
+ * Creates a new ERC-20 contract with the specified initial supply.
  */
-export interface Message_total_supply {
-    __kind: 'total_supply'
+export interface Constructor_new {
+    __kind: 'new'
+    initialSupply: Balance
+}
+
+export type Message = Message_allowance | Message_approve | Message_balance_of | Message_total_supply | Message_transfer | Message_transfer_from
+
+/**
+ *  Returns the amount which `spender` is still allowed to withdraw from `owner`.
+ * 
+ *  Returns `0` if no allowance has been set.
+ */
+export interface Message_allowance {
+    __kind: 'allowance'
+    owner: AccountId
+    spender: AccountId
+}
+
+/**
+ *  Allows `spender` to withdraw from the caller's account multiple times, up to
+ *  the `value` amount.
+ * 
+ *  If this function is called again it overwrites the current allowance with `value`.
+ * 
+ *  An `Approval` event is emitted.
+ */
+export interface Message_approve {
+    __kind: 'approve'
+    spender: AccountId
+    value: Balance
 }
 
 /**
@@ -715,14 +731,10 @@ export interface Message_balance_of {
 }
 
 /**
- *  Returns the amount which `spender` is still allowed to withdraw from `owner`.
- * 
- *  Returns `0` if no allowance has been set.
+ *  Returns the total token supply.
  */
-export interface Message_allowance {
-    __kind: 'allowance'
-    owner: AccountId
-    spender: AccountId
+export interface Message_total_supply {
+    __kind: 'total_supply'
 }
 
 /**
@@ -738,20 +750,6 @@ export interface Message_allowance {
 export interface Message_transfer {
     __kind: 'transfer'
     to: AccountId
-    value: Balance
-}
-
-/**
- *  Allows `spender` to withdraw from the caller's account multiple times, up to
- *  the `value` amount.
- * 
- *  If this function is called again it overwrites the current allowance with `value`.
- * 
- *  An `Approval` event is emitted.
- */
-export interface Message_approve {
-    __kind: 'approve'
-    spender: AccountId
     value: Balance
 }
 
@@ -778,18 +776,20 @@ export interface Message_transfer_from {
     value: Balance
 }
 
-export type Constructor = Constructor_new
+export type Event = Event_Approval | Event_Transfer
 
-/**
- * Creates a new ERC-20 contract with the specified initial supply.
- */
-export interface Constructor_new {
-    __kind: 'new'
-    initialSupply: Balance
+export interface Event_Approval {
+    __kind: 'Approval'
+    owner: AccountId
+    spender: AccountId
+    value: Balance
 }
 
-export type Balance = bigint
-
-export type AccountId = Uint8Array
+export interface Event_Transfer {
+    __kind: 'Transfer'
+    from?: (AccountId | undefined)
+    to?: (AccountId | undefined)
+    value: Balance
+}
 
 export type Result<T, E> = {__kind: 'Ok', value: T} | {__kind: 'Err', value: E}

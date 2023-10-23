@@ -1,8 +1,8 @@
-	type Owner @entity {
+type Owner @entity {
   id: ID!
   balance: BigInt!
 }
- 
+
 type Transfer @entity {
   id: ID!
   from: Owner
@@ -10,5 +10,5 @@ type Transfer @entity {
   amount: BigInt!
   timestamp: DateTime!
   block: Int!
+  extrinsicHash: String!
 }
- 
