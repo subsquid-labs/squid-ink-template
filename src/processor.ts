@@ -16,8 +16,6 @@ export const SS58_NETWORK = 'astar' // used for the ss58 prefix, astar shares it
 const CONTRACT_ADDRESS_SS58 = 'XnrLUQucQvzp5kaaWLG9Q3LbZw5DPwpGn69B5YcywSWVr5w'
 export const CONTRACT_ADDRESS = ss58.codec(SS58_NETWORK).decode(CONTRACT_ADDRESS_SS58)
 
-console.log('CONTRACT_ADDRESS', CONTRACT_ADDRESS)
-
 export const processor = new SubstrateBatchProcessor()
     .setDataSource({
         // Lookup archive by the network name in Subsquid registry
@@ -43,7 +41,9 @@ export const processor = new SubstrateBatchProcessor()
         }
     })
     .setBlockRange({
-        from: 1_500_000
+        // genesis block happens to not have a timestamp, so it's easier
+        // to start from 1 in cases when the deployment height is unknown
+        from: 1
     })
 
 export type Fields = SubstrateBatchProcessorFields<typeof processor>
