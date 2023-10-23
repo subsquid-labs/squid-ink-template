@@ -39,7 +39,7 @@ function getTransferRecords(ctx: ProcessorContext<Store>): TransferRecord[] {
         assert(block.header.timestamp, `Block ${block.header.height} had no timestamp`)
         for (const event of block.events) {
             if (event.name === 'Contracts.ContractEmitted' && event.args.contract === CONTRACT_ADDRESS) {
-                assert(event.extrinsic?.hash, `Event ${event} arrived without a parent extrinsic`)
+                assert(event.extrinsic, `Event ${event} arrived without a parent extrinsic`)
                 const decodedEvent = erc20.decodeEvent(event.args.data)
                 if (decodedEvent.__kind === 'Transfer') {
                     records.push({
