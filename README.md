@@ -5,7 +5,7 @@ This template indexes a sample ERC-20 Ink!-based smart contract token transfers 
 
 For more details, inspect [Squid SDK docs](https://docs.subsquid.io/), including the [dedicated page on Ink! support](https://docs.subsquid.io/substrate-indexing/wasm-support) and the [Ink! indexing tutorial](https://docs.subsquid.io/tutorials/create-a-wasm-processing-squid/).
 
-Dependencies: Node.js, Docker.
+Dependencies: Node.js v16 or newer, Git, Docker.
 
 ## Quickstart
 
@@ -23,15 +23,17 @@ npm ci
 # 3. Start a Postgres database container and detach
 sqd up
 
-# 4. Start the processor
-sqd process
+# 4. Build the project
+sqd build
 
-# 5. The command above will block the terminal
-#    being busy with fetching the chain data, 
-#    transforming and storing it in the target database.
-#
-#    To start the graphql server open the separate terminal
-#    and run
+# 5. Start both the squid processor and the GraphQL server
+sqd run .
+```
+A GraphiQL playground will be available at [localhost:4350/graphql](http://localhost:4350/graphql).
+
+You can also start squid services one by one:
+```bash
+sqd process
 sqd serve
 ```
 
@@ -41,7 +43,7 @@ sqd serve
 
 Start development by defining the schema of the target database via `schema.graphql`.
 Schema definition consists of regular graphql type declarations annotated with custom directives.
-Full description of `schema.graphql` dialect is available [here](https://docs.subsquid.io/basics/schema-file).
+Full description of `schema.graphql` dialect is available [here](https://docs.subsquid.io/store/postgres/schema-file/).
 
 ### 2. Generate TypeORM classes
 
