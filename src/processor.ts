@@ -18,18 +18,16 @@ const CONTRACT_ADDRESS_SS58 = 'XnrLUQucQvzp5kaaWLG9Q3LbZw5DPwpGn69B5YcywSWVr5w'
 export const CONTRACT_ADDRESS = ss58.codec(SS58_NETWORK).decode(CONTRACT_ADDRESS_SS58)
 
 export const processor = new SubstrateBatchProcessor()
-    .setDataSource({
-        // Lookup archive by the network name in Subsquid registry
-        // See https://docs.subsquid.io/substrate-indexing/supported-networks/
-        archive: lookupArchive('shibuya', {release: 'ArrowSquid'}),
-        // Chain RPC endpoint is required on Substrate for metadata and real-time updates
-        chain: {
-            // Set via .env for local runs or via secrets when deploying to Subsquid Cloud
-            // https://docs.subsquid.io/deploy-squid/env-variables/
-            url: assertNotNull(process.env.RPC_ENDPOINT),
-            // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
-            rateLimit: 10
-        }
+    // Lookup archive by the network name in Subsquid registry
+    // See https://docs.subsquid.io/substrate-indexing/supported-networks/
+    .setGateway(lookupArchive('shibuya', {release: 'ArrowSquid'}))
+    // Chain RPC endpoint is required on Substrate for metadata and real-time updates
+    .setRpcEndpoint({
+        // Set via .env for local runs or via secrets when deploying to Subsquid Cloud
+        // https://docs.subsquid.io/deploy-squid/env-variables/
+        url: assertNotNull(process.env.RPC_ENDPOINT),
+        // More RPC connection options at https://docs.subsquid.io/substrate-indexing/setup/general/#set-data-source
+        rateLimit: 10
     })
     .addContractsContractEmitted({
         contractAddress: [CONTRACT_ADDRESS],
