@@ -1,7 +1,6 @@
 import {assertNotNull} from '@subsquid/util-internal'
 import {toHex} from '@subsquid/util-internal-hex'
 import * as ss58 from '@subsquid/ss58'
-import {lookupArchive} from '@subsquid/archive-registry'
 import {
     BlockHeader,
     DataHandlerContext,
@@ -20,7 +19,7 @@ export const CONTRACT_ADDRESS = ss58.codec(SS58_NETWORK).decode(CONTRACT_ADDRESS
 export const processor = new SubstrateBatchProcessor()
     // Lookup archive by the network name in Subsquid registry
     // See https://docs.subsquid.io/substrate-indexing/supported-networks/
-    .setGateway(lookupArchive('shibuya', {release: 'ArrowSquid'}))
+    .setGateway('https://v2.archive.subsquid.io/network/shibuya-substrate')
     // Chain RPC endpoint is required on Substrate for metadata and real-time updates
     .setRpcEndpoint({
         // Set via .env for local runs or via secrets when deploying to Subsquid Cloud
