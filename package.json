@@ -10,7 +10,6 @@
     "lint": "eslint . --ext .ts --ignore-path .gitignore --ignore-pattern src/abi/**/*  --fix"
   },
   "dependencies": {
-    "@ethersproject/abi": "^5.7.0",
     "@subsquid/graphql-server": "4.5.1",
     "@subsquid/ink-abi": "^3.0.3",
     "@subsquid/ss58": "^2.0.2",
@@ -18,7 +17,6 @@
     "@subsquid/typeorm-migration": "1.3.0",
     "@subsquid/typeorm-store": "1.4.0",
     "dotenv": "^16.4.5",
-    "ethers": "^6.11.1",
     "pg": "8.11.5",
     "typeorm": "^0.3.20"
   },
